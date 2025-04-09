@@ -21,19 +21,17 @@ export class BooksController {
         return this.booksService.searchBooks(title);
     }
 
-    // protected
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get()
+    @Get('')
     allBooks(){
         return this.booksService.allBooks();
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
     getBook(@Param('id') id: string){
         return this.booksService.getBook(parseInt(id));
     }
+
+    // protected
 
     @UseGuards(AuthGuard('jwt'))
     @Post('new')
