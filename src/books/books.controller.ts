@@ -21,6 +21,12 @@ export class BooksController {
         return this.booksService.searchBooks(title);
     }
 
+    @Get('sort')
+    sortBooks(@Query('group') group:'price' | 'rating', @Query('order') order:'asc' | 'desc'){
+        
+        return this.booksService.sortBooks(group, order);
+    }
+
     @Get('')
     allBooks(@Query('limit') limit?: string, @Query('page') page?:string){
         return this.booksService.allBooks(parseInt(limit || '10'), parseInt(page || '1'));

@@ -154,4 +154,21 @@ export class BooksService {
         return filteredBooks;
     }
 
+    async sortBooks(group:'price'|'rating', order: 'asc'|'desc'){
+        const sortCriteria = {}
+        if(group === 'price'){
+            sortCriteria["price"]= order
+        }
+        else{
+            sortCriteria["rating"]= order
+        } 
+
+        const sortedBooks = await this.prisma.book.findMany({
+            orderBy: {
+                ...sortCriteria
+            }
+        });
+        return sortedBooks;
+    }
+
 }
