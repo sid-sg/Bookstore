@@ -123,4 +123,20 @@ export class BooksService {
         }
     }
 
+    async filterBooks(author?: string, category?: string, rating?: number){
+        const filters:{author?: string, category?: string, rating?: {gte: number}} = {}
+
+        if(author) filters.author = author;
+        if(category) filters.category = category;
+        if(rating) filters.rating = { gte: rating };
+
+        const filteredBooks = await this.prisma.book.findMany({
+            where: {
+                ...filters
+            }
+        });
+
+        return filteredBooks;
+    }
+
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { AuthGuard } from '@nestjs/passport';
 import { newBookDto, updatedBookDto } from './dto';
@@ -6,6 +6,16 @@ import { newBookDto, updatedBookDto } from './dto';
 @Controller('books')
 export class BooksController {
     constructor(private booksService: BooksService){}
+
+    //not protected
+
+    @Get('filter')
+    filterBooks(@Query('author') author?:string, @Query('category') category?:string, @Query('rating') rating?:string){
+        
+        return this.booksService.filterBooks(author, category, parseFloat(rating ?? '0'));
+    }
+
+    // protected
 
     @UseGuards(AuthGuard('jwt'))
     @Get('all')
@@ -37,4 +47,5 @@ export class BooksController {
     deleteBook(@Param('id') id: string){
         return this.booksService.deleteBook(parseInt(id));
     }
+
 }
