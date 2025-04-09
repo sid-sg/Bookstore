@@ -138,5 +138,17 @@ export class BooksService {
 
         return filteredBooks;
     }
+    
+    async searchBooks(title: string){
+        const filteredBooks = await this.prisma.book.findMany({
+            where: {
+                title: {
+                    contains: title,
+                    mode: 'insensitive'
+                }
+            }
+        });
+        return filteredBooks;
+    }
 
 }

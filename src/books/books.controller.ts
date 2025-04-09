@@ -14,11 +14,17 @@ export class BooksController {
         
         return this.booksService.filterBooks(author, category, parseFloat(rating ?? '0'));
     }
+    
+    @Get('search')
+    searchBooks(@Query('title') title:string){
+        
+        return this.booksService.searchBooks(title);
+    }
 
     // protected
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('all')
+    @Get()
     allBooks(){
         return this.booksService.allBooks();
     }
