@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { AuthGuard } from '@nestjs/passport';
 import { newBookDto } from './dto';
@@ -13,11 +13,11 @@ export class BooksController {
         return this.booksService.allBooks();
     }
 
-    // @UseGuards(AuthGuard('jwt'))
-    // @Get('id')
-    // getBook(){
-    //     return this.booksService.getBook();
-    // }
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':id')
+    getBook(@Param('id') id: string){
+        return this.booksService.getBook(parseInt(id));
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('new')

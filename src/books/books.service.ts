@@ -54,6 +54,21 @@ export class BooksService {
         }
     }
 
+    async getBook(id: number){
+        const book = await this.prisma.book.findUnique({
+            where:{
+                id: id
+            }
+        });
+        if(!book){
+            throw new HttpException('Book not found', HttpStatus.NOT_FOUND);
+        }
+
+        return {
+            'Book': book
+        }
+    }
+
     // updateBook(){
     //     return "Update book";
     // }
