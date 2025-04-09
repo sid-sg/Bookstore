@@ -6,8 +6,18 @@ import { newBookDto } from './dto';
 export class BooksService {
     constructor(private prisma: PrismaService){}
 
-    allBooks(){
-        return "All books";
+    async allBooks(){
+        try{
+            const books = await this.prisma.book.findMany();
+
+            return {
+                "Books": books
+            }
+        }
+        catch(e){
+            console.log(e);
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     async newBook(dto: newBookDto){
