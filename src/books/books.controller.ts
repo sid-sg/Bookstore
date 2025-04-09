@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { AuthGuard } from '@nestjs/passport';
-import { newBookDto } from './dto';
+import { newBookDto, updatedBookDto } from './dto';
 
 @Controller('books')
 export class BooksController {
@@ -26,15 +26,15 @@ export class BooksController {
     }
 
 
-    // @UseGuards(AuthGuard('jwt'))
-    // @Patch('update')
-    // updateBook(){
-    //     return this.booksService.updateBook();
-    // }
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('update/:id')
+    updateBook(@Param('id') id: string, @Body() dto: updatedBookDto){
+        return this.booksService.updateBook(parseInt(id), dto);
+    }
 
-    // @UseGuards(AuthGuard('jwt'))
-    // @Delete('delete')
-    // deleteBook(){
-    //     return this.booksService.deleteBook();
-    // }
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('delete/:id')
+    deleteBook(@Param('id') id: string){
+        return this.booksService.deleteBook(parseInt(id));
+    }
 }

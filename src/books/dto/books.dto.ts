@@ -1,6 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsDecimal, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
-import { Decimal } from "generated/prisma/runtime/library";
+import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 
 export class newBookDto{
     @IsString()
@@ -17,14 +16,12 @@ export class newBookDto{
 
     @IsNumber()
     @IsNotEmpty()
-    // @Type(()=>Number)
     price: number;
     
     @IsNumber()
     @IsOptional()
     @Min(0)
     @Max(5)
-    // @Type(()=>Number)
     rating?: number;
     
     @IsDate()
@@ -35,4 +32,37 @@ export class newBookDto{
     @IsString()
     @IsNotEmpty()
     isbn: string;
+}
+
+export class updatedBookDto{
+    @IsOptional()
+    @IsString()
+    title?: string;
+
+    @IsOptional()
+    @IsString()
+    author?: string;
+
+    @IsOptional()
+    @IsString()
+    category?: string;
+
+    @IsOptional()
+    @IsNumber()
+    price?: number;
+    
+    @IsNumber()
+    @IsOptional()
+    @Min(0)
+    @Max(5)
+    rating?: number;
+    
+    @IsOptional()
+    @IsDate()
+    @Type(()=>Date)
+    publishedDate?: Date;
+
+    @IsOptional()
+    @IsString()
+    isbn?: string;
 }

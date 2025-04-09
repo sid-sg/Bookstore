@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { newBookDto } from './dto';
+import { newBookDto, updatedBookDto } from './dto';
 
 @Injectable()
 export class BooksService {
@@ -16,7 +16,7 @@ export class BooksService {
         }
         catch(e){
             console.log(e);
-            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+            return new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -46,11 +46,12 @@ export class BooksService {
 
             return{
                 'message': 'New book created',
+                'New book': newBook
             }
         }
         catch(e){
             console.log(e);
-            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);            
+            return new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);            
         }
     }
 
@@ -61,7 +62,7 @@ export class BooksService {
             }
         });
         if(!book){
-            throw new HttpException('Book not found', HttpStatus.NOT_FOUND);
+            return new HttpException('Book not found', HttpStatus.NOT_FOUND);
         }
 
         return {
@@ -69,11 +70,57 @@ export class BooksService {
         }
     }
 
-    // updateBook(){
-    //     return "Update book";
-    // }
+    async updateBook(id: number, dto: updatedBookDto){
+        const book = await this.prisma.book.findUnique({
+            where:{
+                id: id
+            }
+        });
+        if(!book){
+            return new HttpException('Book not found', HttpStatus.NOT_FOUND);
+        }
 
-    // deleteBook(){
-    //     return "Delete book";
-    // }
+        try{
+            const updatedBook = await this.prisma.book.update({
+                where: {
+                    id: id
+                },
+                data:{
+                    ...dto
+                }
+            });
+
+            return {
+                'message': 'Book updated',
+                'Updated book': updatedBook
+            }
+        }
+        catch(e){
+            console.log(e);
+            return new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async deleteBook(id: number){
+        const book = await this.prisma.book.findUnique({
+            where:{
+                id: id
+            }
+        });
+        if(!book){
+            return new HttpException('Book not found', HttpStatus.NOT_FOUND);
+        }
+
+        const deletedBook = await this.prisma.book.delete({
+            where:{
+                id: id
+            }
+        });
+
+        return {
+            'message': 'Book deleted',
+            'Deleted book': deletedBook
+        }
+    }
+
 }

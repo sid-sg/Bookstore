@@ -15,7 +15,7 @@ export class AuthService{
             }
         });
         if(userExist){
-            throw new HttpException('User already exists', HttpStatus.CONFLICT);
+            return new HttpException('User already exists', HttpStatus.CONFLICT);
         }
         try{
 
@@ -37,7 +37,7 @@ export class AuthService{
         catch(e){
             console.log(e);
             
-            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+            return new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -49,13 +49,13 @@ export class AuthService{
             }
         });
         if(!userExist){
-            throw new HttpException("User doesn't exist", HttpStatus.NOT_FOUND);
+            return new HttpException("User doesn't exist", HttpStatus.NOT_FOUND);
         }
 
         const passwordMatch = await bcrypt.compare(dto.plainPassword, userExist.hashedPassword);
 
         if(!passwordMatch){
-            throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+            return new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
         }
        
         const token = await this.signJwt(userExist.id, userExist.email);
