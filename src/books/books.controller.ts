@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { AuthGuard } from '@nestjs/passport';
+import { newBookDto } from './dto';
 
 @Controller('books')
 export class BooksController {
@@ -20,8 +21,8 @@ export class BooksController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('new')
-    newBook(){
-        return this.booksService.newBook();
+    newBook(@Body() dto: newBookDto){
+        return this.booksService.newBook(dto);
     }
 
 

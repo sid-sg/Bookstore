@@ -28,6 +28,7 @@ model Book {
   author String
   category String
   price Float
-  rating Float
+  rating Float? @default(0)
   publishedDate DateTime
+  isbn String @unique
 }
