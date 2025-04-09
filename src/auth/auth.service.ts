@@ -1,13 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { SignupDto, LoginDto } from "./dto";
 import * as bcrypt from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable({})
 export class AuthService{
-    constructor(private prisma: PrismaService){}
+    constructor(private prisma: PrismaService, private jwt: JwtService){}
 
-    async signup(dto: AuthDto){
+    async signup(dto: SignupDto){
         const userExist = await this.prisma.user.findUnique({
             where:{
                 email: dto.email
@@ -41,9 +42,40 @@ export class AuthService{
 
     }
 
-    signin(dto: AuthDto){
+    async login(dto: LoginDto){
+        const userExist = await this.prisma.user.findUnique({
+            where:{
+                email: dto.email
+            }
+        });
+        if(!userExist){
+            throw new HttpException("User doesn't exist", HttpStatus.NOT_FOUND);
+        }
+
+        const passwordMatch = await bcrypt.compare(dto.plainPassword, userExist.hashedPassword);
+
+        if(!passwordMatch){
+            throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+        }
+       
+        const token = await this.signJwt(userExist.id, userExist.email);
+        
         return {
-            'message': 'user signed in'
+            'message': 'user logged in',
+            'token': token,
         };
+    }
+
+    async signJwt(userId:number, email:string){
+        const data = {
+            userId: userId,
+            email: email
+        }
+
+        const token = await this.jwt.signAsync(data, {
+            secret: process.env.JWT_SECRET,
+        });
+
+        return token;
     }
 }
