@@ -6,9 +6,12 @@ import { newBookDto, updatedBookDto } from './dto';
 export class BooksService {
     constructor(private prisma: PrismaService){}
 
-    async allBooks(){
+    async allBooks(limit = 10 , page = 1){
         try{
-            const books = await this.prisma.book.findMany();
+            const books = await this.prisma.book.findMany({
+                skip: (page-1)*limit,
+                take: limit
+            });
 
             return {
                 "Books": books

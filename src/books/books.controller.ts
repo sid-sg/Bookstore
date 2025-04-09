@@ -12,7 +12,7 @@ export class BooksController {
     @Get('filter')
     filterBooks(@Query('author') author?:string, @Query('category') category?:string, @Query('rating') rating?:string){
         
-        return this.booksService.filterBooks(author, category, parseFloat(rating ?? '0'));
+        return this.booksService.filterBooks(author, category, parseFloat(rating || '0'));
     }
     
     @Get('search')
@@ -22,8 +22,8 @@ export class BooksController {
     }
 
     @Get('')
-    allBooks(){
-        return this.booksService.allBooks();
+    allBooks(@Query('limit') limit?: string, @Query('page') page?:string){
+        return this.booksService.allBooks(parseInt(limit || '10'), parseInt(page || '1'));
     }
 
     @Get(':id')
